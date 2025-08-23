@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Assistant</title>
+</head>
+<body>
+    <h1>AI Assistant</h1>
+    <form id="ai-form">
+        <label for="message">Message:</label><br>
+        <textarea id="message" name="message" rows="4" cols="50"></textarea><br><br>
+        <label for="model">Model:</label><br>
+        <select id="model" name="model">
+            <option value="opus_ll">opus_ll</option>
+            <option value="haiku_ll">haiku_ll</option>
+        </select><br><br>
+        <input type="submit" value="Submit">
+    </form>
+    <br>
+    <div id="response"></div>
+    <script>
+        document.getElementById('ai-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var message = document.getElementById('message').value;
+            var model = document.getElementById('model').value;
+            
+            fetch('/generate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    'message': message,
+                    'model': model
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.error){
+                    document.getElementById('response').innerText = 'Error: ' + data.error;
+                } else {
+                    document.getElementById('response').innerHTML = `
+                        <h3>AI Analysis Results:</h3>
+                        <p><strong>Summary:</strong> ${data.summary}</p>
+                        <p><strong>Sentiment Score:</strong> ${data.sentiment}/100</p>
+                        <p><strong>Category:</strong> ${data.category}</p>
+                        <p><strong>Recommended Action:</strong> ${data.action}</p>
+                        <p><strong>Processing Time:</strong> ${data.duration.toFixed(2)} seconds</p>
+                        <details>
+                            <summary>Full JSON Response</summary>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </details>
+                    `;
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                document.getElementById('response').innerText = 'Error: ' + error;
+            });
+        });
+    </script>
+</body>
+</html>
