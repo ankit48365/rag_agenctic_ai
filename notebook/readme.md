@@ -5,12 +5,8 @@
 ### check package in uv running
 `uv run python -c "from sentence_transformers import SentenceTransformer; print('sentence_transformers imported successfully!')"`
 
-
 ### One time 
 `uv add jupyter ipykernel`
-
-### One time  // try skipping
-`uv run python -m ipykernel install --user --name="rag_agenctic_ai" --display-name="RAG Agentic AI (uv)"`
 
 ### check kernels list
 `uv run jupyter kernelspec list`
